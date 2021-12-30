@@ -6,8 +6,12 @@ module.exports = async (req, res) => {
         const { id } = req.params;
         const { username, schoolId, age, address, contactNo, parentName, className } = req.body;
 
-        // const myUser = await User.findOne({where: {id}})
-        // console.log(">>>>>>>>>>", myUser, "<<<<<<<<<<<<");
+        const isUsernameAlreadyExits = await User.findOne({ where: { username } })
+        console.log(">>>>>>>>>>", isUsernameAlreadyExits, "<<<<<<<<<<<<");
+
+        if(isUsernameAlreadyExits) {
+            return res.status(400).send({status: "failed", message: "Username is not available! Try for another username."})
+        }
 
         User.findOne({
             where: { id: id }
@@ -24,9 +28,9 @@ module.exports = async (req, res) => {
                         .catch(err => {
                             res.status(500).send({ status: "failed", message: err.message || "some error ocurred while updaring a user" });
                         });
-                }else{
+                } else {
                     console.log("user not found");
-                    return res.status(400).send({status: "failed", message:`User not found with id= ${id}`})
+                    return res.status(400).send({ status: "failed", message: `User not found with id= ${id}` })
                 }
 
 
